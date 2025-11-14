@@ -101,19 +101,6 @@ export const OmniTimeline = shadow_component(use => {
 
 	const timeline = use.defer(() => use.shadow.querySelector(".timeline-relative")) as GoldElement ?? use.element
 
-
-    const videoUrl = '../vid/video.mp4'
-    const video: Video = {
-        element: document.createElement('video'),
-        thumbnail: 'servus',
-        kind: "video",
-        frames: ,
-        fps: number,
-        duration: number,
-        proxy: boolean,
-    }
-    managers.videoManager.create_and_add_video_effect(video, use.context.state)
-
 	return StateHandler(Op.all(
 		use.context.helpers.ffmpeg.is_loading.value,
 		use.context.helpers.ffmpeg.is_loading.value), () => html`

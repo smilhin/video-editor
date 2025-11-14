@@ -27,6 +27,8 @@ import {ExportPanel} from "./components/omni-timeline/views/export/panel.js"
 import {MediaPlayerPanel} from "./components/omni-timeline/views/media-player/panel.js"
 import {ExportConfirmModal, ExportInProgressOverlay} from './components/omni-timeline/views/export/view.js'
 import {generate_id} from "@benev/slate/x/tools/generate_id.js";
+import {Video, VideoFile} from "./components/omni-media/types";
+import {quick_hash} from "@benev/construct";
 
 posthog.init('phc_CMbHMWGVJSqM1RqGyGxWCyqgaSGbGFKl964fIN3NDwU',
 	{
@@ -120,10 +122,55 @@ const router = new HashRouter({
 			registered = true
 		}
 		const omnislate = setupContext(projectId)
-        const managers = omnislate.context.controllers.compositor.managers
-       // managers.videoManager.create_and_add_video_effect(video, omnislate)})
 
-		return html`${VideoEditor(omnislate)()}`
+        const preloadVideo = async () => {
+            try {
+                const url = "https://cdn.pixabay.com/video/2025/10/31/313145_large.mp4"
+                const response = await fetch(url)
+                const blob = await response.blob()
+
+                const file = new File([blob], "video.mp4", { type: blob.type })
+
+                const media = omnislate.context.controllers.media
+
+                const hash = await quick_hash(file)
+
+                await media.import_file(file, hash)
+
+                const mediaEntry = media.get(hash)
+
+                const el = document.createElement("video")
+                el.src = URL.createObjectURL(mediaEntry.file)
+                el.load()
+
+                const thumbnail = await media.create_video_thumbnail(el)
+
+                const video: Video = {
+                    element: el,
+                    file: mediaEntry.file,
+                    hash: mediaEntry.hash,
+                    kind: "video",
+                    frames: mediaEntry.frames,
+                    fps: mediaEntry,
+                    duration: mediaEntry.duration,
+                    proxy: mediaEntry.proxy,
+                    thumbnail
+                }
+
+                const managers = omnislate.context.controllers.compositor.managers
+                managers.videoManager.create_and_add_video_effect(video, omnislate.context.state)
+
+            } catch (err) {
+                console.error("preloadVideo failed:", err)
+            }
+        }
+
+
+        void preloadVideo()
+
+
+
+        return html`${VideoEditor(omnislate)()}`
 	},
 })
 
