@@ -65,43 +65,6 @@ export class OmniManager extends LitElement {
 		setTimeout(() => document.body.removeChild(toast), 5000)
 	}
 
-	async joinRoom() {
-		this.joiningInProgress = true
-		this.requestUpdate()
-		try {
-			await collaboration.joinRoom(this.inviteID)
-			this.joiningInProgress = false
-		} catch(e) {
-			collaboration.initiatingProject = false
-			this.sessionError = e
-			this.joiningInProgress = false
-		}
-		this.requestUpdate()
-	}
-
-	handleCollaborationUI(content: TemplateResult) {
-		return html`
-			<div class="collaboration">
-				<h3 class=title>${collaborateSvg} Collaboration</h3>
-				${this.joiningInProgress
-					? html`<span class=creating>Session loading ${loadingSvg}</span>`
-					: this.sessionError === ""
-						? content
-						: html`
-								<span class=error>${warningSvg} error joining session</span>
-								<span class=reason>reason: <span>${this.sessionError}</span></span>
-								<button @click=${() => {this.sessionError = ""; this.requestUpdate()}} class="renew">renew</button>
-							`
-				}
-			</div>
-		`
-	}
-
-	setInviteId(str: string) {
-		this.inviteID = str
-		this.requestUpdate()
-	}
-
 	render() {
 		return html`
 			<div class="box">
@@ -123,23 +86,6 @@ export class OmniManager extends LitElement {
 							}}>
 						</a>
 					</div>
-					${this.handleCollaborationUI(html`
-						<div>
-							<h3 class=join>Join Session</h3>
-							<input
-								class="code-input"
-								placeholder="Enter Invite Code"
-								@input=${(e: InputEvent) => {this.setInviteId((e.target as HTMLInputElement).value); this.requestUpdate()}}
-							>
-							<button
-								?disabled=${this.inviteID === ""}
-								class="join"
-								@click=${this.joinRoom}
-							>
-								Join
-							</button>
-						</div>
-					`)}
 					<h1>Your projects</h1>
 					<div class=flex>
 						${this.projects.map(project => html`

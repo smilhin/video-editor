@@ -29,6 +29,7 @@ import {OmniTransitions} from "./components/omni-transitions/component.js"
 import {ExportPanel} from "./components/omni-timeline/views/export/panel.js"
 import {MediaPlayerPanel} from "./components/omni-timeline/views/media-player/panel.js"
 import {ExportConfirmModal, ExportInProgressOverlay} from './components/omni-timeline/views/export/view.js'
+import {generate_id} from "@benev/slate/x/tools/generate_id.js";
 
 posthog.init('phc_CMbHMWGVJSqM1RqGyGxWCyqgaSGbGFKl964fIN3NDwU',
 	{
@@ -62,7 +63,7 @@ export function setupContext(projectId: string) {
 	return omnislate
 }
 
-register_to_dom({OmniManager, LandingPage})
+register_to_dom({OmniManager})
 let registered = false
 
 export function removeLoadingPageIndicator() {
@@ -73,17 +74,6 @@ export function removeLoadingPageIndicator() {
 
 const VideoEditor =  (omnislate: Nexus<OmniContext>) => omnislate.light_view((use) => () => {
 	use.watch(() => use.context.state)
-	const collaboration = use.context.controllers.collaboration
-	const [renameDisabled, setRenameDisabled] = use.state(true)
-	const toggleProjectRename = (e: PointerEvent) => {
-		e.preventDefault()
-		setRenameDisabled(!renameDisabled)
-	}
-
-	const confirmProjectRename = () => {
-		const projectName = use.element.querySelector(".input-name") as HTMLInputElement
-		use.context.actions.set_project_name(projectName.value)
-	}
 
 	use.mount(() => {
 		const dispose = collaboration.onChange(() => use.rerender())
@@ -99,17 +89,6 @@ const VideoEditor =  (omnislate: Nexus<OmniContext>) => omnislate.light_view((us
 			${ExportConfirmModal([showConfirmExportModal, setShowConfirmExportModal])}
 			${ExportInProgressOverlay([])}
 			<div class=editor-header>
-				<div class=flex>
-					<img class="logo" src="/assets/icon3.png" />
-					<div class="project-name">
-						<span class="box">
-							<input class="input-name" ?disabled=${renameDisabled} .value=${use.context.state.projectName}>
-							<span class="icons" @click=${toggleProjectRename}>
-								${renameDisabled ? html`${pencilSquareSvg}` : html`<span @click=${confirmProjectRename} class="check">${checkSvg}</span>`}
-							</span>
-						</span>
-					</div>
-				</div>
 				<div class="export">
 					${CollaborationManager([])}
 					${ShortcutsManager([])}
@@ -133,14 +112,8 @@ const VideoEditor =  (omnislate: Nexus<OmniContext>) => omnislate.light_view((us
 	`
 })
 
+window.location.hash = `/editor/${generate_id()}`
 const router = new HashRouter({
-	'/': () => {
-		return html`<landing-page></landing-page>`
-	},
-	'/editor': () => {
-		collaboration.disconnect()
-		return html`<omni-manager></omni-manager>`
-	},
 	'/editor/*': (projectId) => {
 		if(!collaboration.initiatingProject) {
 			collaboration.disconnect()
@@ -150,6 +123,9 @@ const router = new HashRouter({
 			registered = true
 		}
 		const omnislate = setupContext(projectId)
+        const managers = omnislate.context.controllers.compositor.managers
+       // managers.videoManager.create_and_add_video_effect(video, omnislate)})
+
 		return html`${VideoEditor(omnislate)()}`
 	},
 })

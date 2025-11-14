@@ -56,7 +56,7 @@ export class HashRouter {
 		} else if (currentPath.startsWith("editor")) {
 			this.render(() => html`404 Not Found`)
 		} else {
-			this.render(this.routes["/"]) // Default to landing page
+			this.render(this.routes["/#/editor/*"]) // Default to landing page
 		}
 	}
 
