@@ -17,6 +17,7 @@ import {StateHandler} from "../../views/state-handler/view.js"
 import {TransitionIndicator} from "./views/indicators/add-transition.js"
 import {ProposalIndicator} from "./views/indicators/proposal-indicator.js"
 import {calculate_timeline_width} from "./utils/calculate_timeline_width.js"
+import {Video} from "./types";
 
 export const OmniTimeline = shadow_component(use => {
 	use.styles(styles)
@@ -25,6 +26,7 @@ export const OmniTimeline = shadow_component(use => {
 	const effectTrim = use.context.controllers.timeline.effectTrimHandler
 	const effectDrag = use.context.controllers.timeline.effectDragHandler
 	const playheadDrag = use.context.controllers.timeline.playheadDragHandler
+    const managers = use.context.controllers.compositor.managers // video param
 
 	use.mount(() => {
 		const layout = document.querySelector("construct-editor")?.shadowRoot?.querySelector(".layout") as HTMLElement
@@ -98,6 +100,19 @@ export const OmniTimeline = shadow_component(use => {
 	}
 
 	const timeline = use.defer(() => use.shadow.querySelector(".timeline-relative")) as GoldElement ?? use.element
+
+
+    const videoUrl = '../vid/video.mp4'
+    const video: Video = {
+        element: document.createElement('video'),
+        thumbnail: 'servus',
+        kind: "video",
+        frames: ,
+        fps: number,
+        duration: number,
+        proxy: boolean,
+    }
+    managers.videoManager.create_and_add_video_effect(video, use.context.state)
 
 	return StateHandler(Op.all(
 		use.context.helpers.ffmpeg.is_loading.value,

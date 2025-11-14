@@ -5,7 +5,6 @@ import {ConstructEditor, single_panel_layout} from "@benev/construct/x/mini.js"
 import {Tooltip} from './views/tooltip/view.js'
 import {HashRouter} from './tools/hash-router.js'
 import {TestEnvAlert} from './views/test-env-alert.js'
-import checkSvg from './icons/gravity-ui/check.svg.js'
 import exportSvg from './icons/gravity-ui/export.svg.js'
 import {ShortcutsManager} from './views/shortcuts/view.js'
 import {TextPanel} from "./components/omni-text/panel.js"
@@ -16,12 +15,10 @@ import {OmniAnim} from "./components/omni-anim/component.js"
 import {OmniMedia} from "./components/omni-media/component.js"
 import {FiltersPanel} from './components/omni-filters/panel.js'
 import {TimelinePanel} from "./components/omni-timeline/panel.js"
-import {LandingPage} from './components/landingpage/component.js'
 import {OmniManager} from './components/omni-manager/component.js'
 import {OmniFilters} from './components/omni-filters/component.js'
 import {CollaborationManager} from './views/collaboration/view.js'
 import {OmniTimeline} from "./components/omni-timeline/component.js"
-import pencilSquareSvg from './icons/gravity-ui/pencil-square.svg.js'
 import {ProjectSettingsPanel} from "./views/project-settings/panel.js"
 import {TransitionsPanel} from "./components/omni-transitions/panel.js"
 import {omnislate, OmniContext, collaboration} from "./context/context.js"

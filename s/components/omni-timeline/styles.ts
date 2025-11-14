@@ -22,7 +22,7 @@ export const styles = css`
 				position: sticky;
 				left: 0;
 				z-index: 800;
-				font-family: "Nippo-Regular";
+				font-family: "Courier New", Courier, monospace;
 				color: #fff;
 				border: 1px solid #111;
 				background-image: -webkit-gradient(
@@ -62,7 +62,7 @@ export const styles = css`
 				flex-direction: column;
 				padding: 1.5em;
 				gap: 0.2em;
-				font-family: cursive;
+				font-family: "Courier New", Courier, monospace;
 
 				& h3 {
 					font-size: 18px;
