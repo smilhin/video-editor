@@ -129,13 +129,16 @@ const router = new HashRouter({
                 const response = await fetch(url)
                 const blob = await response.blob()
 
-                const file = new File([blob], "video.mp4", { type: blob.type })
+                const file = new File([blob], "preloaded.mp4", { type: "video/mp4" })
 
                 const media = omnislate.context.controllers.media
 
                 const hash = await quick_hash(file)
 
+                const {frames, duration, fps} = await media.getVideoFileMetadata(file)
+
                 await media.import_file(file, hash)
+                await media.are_files_ready()
 
                 const mediaEntry = media.get(hash)
 
@@ -150,10 +153,10 @@ const router = new HashRouter({
                     file: mediaEntry.file,
                     hash: mediaEntry.hash,
                     kind: "video",
-                    frames: mediaEntry.frames,
-                    fps: mediaEntry,
-                    duration: mediaEntry.duration,
-                    proxy: mediaEntry.proxy,
+                    frames: frames,
+                    fps: fps,
+                    duration: duration,
+                    proxy: false,
                     thumbnail
                 }
 
